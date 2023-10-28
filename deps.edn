@@ -1,0 +1,26 @@
+{:paths   ["src"]
+ :deps    {org.clojure/spec.alpha {:mvn/version "0.2.194"}
+           org.clojure/data.json {:mvn/version "2.3.1"}
+           http-kit/http-kit {:mvn/version "2.5.3"}
+           org.clojure/test.check {:mvn/version "1.1.0"}
+           exoscale/coax {:mvn/version "1.0.0-alpha12"}
+           spec-provider/spec-provider {:mvn/version "0.4.14"}}
+
+ :aliases {:test   {:extra-paths ["test"]}
+
+           ;; Run tests: clj -X:test:runner
+           :runner {:extra-deps {com.cognitect/test-runner
+                                 {:git/url "https://github.com/cognitect-labs/test-runner"
+                                  :sha     "705ad25bbf0228b1c38d0244a36001c2987d7337"}}
+                    :exec-fn    cognitect.test-runner.api/test
+                    :exec-args  {:dirs ["test"]}}
+
+           :clean-ns {:replace-deps {com.github.clojure-lsp/clojure-lsp {:mvn/version "2021.07.19-14.46.52"}}
+                      :exec-fn clojure-lsp.api/clean-ns!
+                      :exec-args {:dry? true
+                                  :verbose false}}
+
+           :format {:replace-deps {com.github.clojure-lsp/clojure-lsp {:mvn/version "2021.07.19-14.46.52"}}
+                    :exec-fn clojure-lsp.api/format!
+                    :exec-args {:dry? true
+                                :verbose false}}}}

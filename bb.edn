@@ -1,0 +1,25 @@
+{:tasks
+ {:requires ([babashka.fs :as fs])
+  
+  classpath-str {:doc "Get classpath as a string"
+                 :task (->> (with-out-str
+                              (clojure "-Spath"))
+                            (drop-last)
+                            (clojure.string/join ""))}
+
+  clean-kondo! {:doc "Clear the clj-kondo cache"
+                :task (do
+                        (println "Clearing the .clj-kondo directory")
+                        (fs/delete-tree ".clj-kondo")
+                        (fs/create-dir ".clj-kondo"))}
+
+  ; bb run --prn init-kondo-cmd
+  init-kondo-cmd {:doc "Construct the initial clj-kondo command line"
+                  :depends [classpath-str]
+                  :task (str "clj-kondo --lint \"" classpath-str "\" --dependencies --parallel --copy-configs")}
+  
+  init-kondo! {:doc "Clear and initialize the clj-kondo cache"
+               :depends [clean-kondo! init-kondo-cmd]
+               :task (do
+                       (println "Creating the initial clj-kondo cache..")
+                       (shell init-kondo-cmd))}}}
